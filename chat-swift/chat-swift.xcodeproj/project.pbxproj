@@ -477,7 +477,7 @@
 		F1D333851DE2F24900A212BD /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		F1D333871DE2F25300A212BD /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		F1D3338E1DE2F3D400A212BD /* chat-swift-Briging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "chat-swift-Briging-Header.h"; sourceTree = SOURCE_ROOT; };
-		F1D335661DE2FACA00A212BD /* Chat-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Chat-Header.h"; path = "../chat/Class/Chat-Header.h"; sourceTree = "<group>"; };
+		F1D335671DE304E100A212BD /* Chat-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Chat-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -576,6 +576,7 @@
 		F1D331AE1DE2F18E00A212BD /* chat */ = {
 			isa = PBXGroup;
 			children = (
+				F1D335671DE304E100A212BD /* Chat-Header.h */,
 				F1D331AF1DE2F1A600A212BD /* EaseUI */,
 				F1D332D61DE2F1A600A212BD /* HyphenateSDK */,
 			);
@@ -1241,7 +1242,6 @@
 			isa = PBXGroup;
 			children = (
 				F1D3338E1DE2F3D400A212BD /* chat-swift-Briging-Header.h */,
-				F1D335661DE2FACA00A212BD /* Chat-Header.h */,
 			);
 			name = support;
 			sourceTree = "<group>";
