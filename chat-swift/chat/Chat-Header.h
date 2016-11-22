@@ -9,7 +9,7 @@
 #ifndef Chat_Header_h
 #define Chat_Header_h
 
-
+//SDK header
 #import "EMChatManagerDelegate.h"
 #import "EMChatroom.h"
 #import "EMChatroomManagerDelegate.h"
@@ -42,5 +42,28 @@
 #import "IEMChatroomManager.h"
 #import "IEMContactManager.h"
 #import "IEMGroupManager.h"
+
+//viewcontrollers
+#import "EaseMessageViewController.h"
+#import "EaseConversationListViewController.h"
+#import "EaseUsersListViewController.h"
+#import "EaseConvertToCommonEmoticonsHelper.h"
+#import "EaseEmotionManager.h"
+#import "EaseMessageCell.h"
+#import "EaseEmoji.h"
+#import "EaseChineseToPinyin.h"
+
+//third party
+#import "EMAlertView.h"
+#import "EMCDDeviceManager.h"
+#import "ChatDemoUIDefine.h"
+#import "TTGlobalUICommon.h"
+
+//Category
+#import "NSDate+Category.h"
+#import "NSDateFormatter+Category.h"
+#import "NSString+Valid.h"
+#import "UIViewController+DismissKeyboard.h"
+#import "UIViewController+HUD.h"
 
 #endif /* Chat_Header_h */

@@ -9,37 +9,35 @@
 import UIKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate
-//,EMChatManagerDelegate
-{
+class AppDelegate: UIResponder, UIApplicationDelegate,EMChatManagerDelegate{
 
-//    let _connectionState : EMConnectionState = EMConnectionConnected
+    let _connectionState : EMConnectionState = EMConnectionConnected
     
     var window: UIWindow?
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-//        window = UIWindow.init(frame: UIScreen.main.bounds)
-//        window?.backgroundColor = UIColor.white
-//
-//        //初始化环信SDK，详细内容在APPDelegate+EaseMob.m文件中
-//        //SDK注册APNS文件的名字，需要与后台上传证书是时的名字--对应
-//        var apnsCertName  = ""
-//        #if DEBUG
-//            apnsCertName = "chatdemoui_dev"
-//        #else
-//            apnsCertName = "chatdemoui"
-//        #endif
-//        
-//        let appKey = UserDefaults.standard.string(forKey: "identifier_appkey")
-//        if !appKey {
-//            appKey = EaseMobAppKey
-//            UserDefaults.standard.set(appkey, forKey: "identifier_appkey")
-//        }
+        window = UIWindow.init(frame: UIScreen.main.bounds)
+        window?.backgroundColor = UIColor.white
+
+        //初始化环信SDK，详细内容在APPDelegate+EaseMob.m文件中
+        //SDK注册APNS文件的名字，需要与后台上传证书是时的名字--对应
+        var apnsCertName  = ""
+        #if DEBUG
+            apnsCertName = "chatdemoui_dev"
+        #else
+            apnsCertName = "chatdemoui"
+        #endif
+        
+        var appKey = UserDefaults.standard.string(forKey: "identifier_appkey")
+        if appKey == nil {
+            appKey = EaseMobAppKey
+            UserDefaults.standard.set(appKey, forKey: "identifier_appkey")
+        }
         
         
-//        window?.makeKeyAndVisible()
+        window?.makeKeyAndVisible()
         
         return true
     }

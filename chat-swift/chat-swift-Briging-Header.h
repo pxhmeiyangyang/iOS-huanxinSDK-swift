@@ -10,24 +10,24 @@
 #define chat_swift_Briging_Header_h
 
 
-//#import "MainViewController.h"
-//
-//#import "LoginViewController.h"
-//
-//#import <UserNotifications/UserNotifications.h>
-//
-//
-//#import "EMNavigationController.h"
-//
-//#import "LoginViewController.h"
-//
-//#import "ChatDemoHelper.h"
-//
-//#import "MBProgressHUD.h"
-//
-//#import "EMClientDelegate.h"
-//
-//#define EaseMobAppKey @"easemob-demo#chatdemoui"
+#import "MainViewController.h"
+
+#import "LoginViewController.h"
+
+#import <UserNotifications/UserNotifications.h>
+
+
+#import "EMNavigationController.h"
+
+#import "LoginViewController.h"
+
+#import "ChatDemoHelper.h"
+
+#import "MBProgressHUD.h"
+
+#import "EMClientDelegate.h"
+
+#define EaseMobAppKey @"easemob-demo#chatdemoui"
 
 
 #endif /* chat_swift_Briging_Header_h */
