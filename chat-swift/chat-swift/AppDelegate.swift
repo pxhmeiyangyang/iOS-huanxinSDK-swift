@@ -13,6 +13,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate,EMChatManagerDelegate{
 
     let _connectionState : EMConnectionState = EMConnectionConnected
     
+    var mainController : MainViewController?
+    
     var window: UIWindow?
 
 
@@ -35,7 +37,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate,EMChatManagerDelegate{
             appKey = EaseMobAppKey
             UserDefaults.standard.set(appKey, forKey: "identifier_appkey")
         }
-        
+        self.easemobApplication(application,
+                                didFinishLaunchingWithOptions: launchOptions,
+                                appkey: appKey!,
+                                apnsCertName: apnsCertName,
+                                otherConfig: [kSDKConfigEnableConsoleLogger:NSNumber.init(value: true)])
         
         window?.makeKeyAndVisible()
         
@@ -63,7 +69,168 @@ class AppDelegate: UIResponder, UIApplicationDelegate,EMChatManagerDelegate{
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
+    //MARK:- EaseMob 初始化和推送等操作
+    func easemobApplication(_ application : UIApplication, didFinishLaunchingWithOptions : [UIApplicationLaunchOptionsKey: Any]?, appkey: String, apnsCertName : String, otherConfig: NSDictionary){
+        //注册登录状态监听
+        NotificationCenter.default.addObserver(self, selector: #selector(loginStateChange), name: NSNotification.Name(rawValue: KNOTIFICATION_LOGINCHANGE), object: nil)
+        let value : Bool = self.isSpecifyServer()
+        EaseSDKHelper.share().hyphenateApplication(application,
+                                                   didFinishLaunchingWithOptions: didFinishLaunchingWithOptions,
+                                                   appkey: appkey,
+                                                   apnsCertName: apnsCertName,
+                                                   otherConfig: [kSDKConfigEnableConsoleLogger : NSNumber.init(booleanLiteral: true),"easeSandBox" : NSNumber.init(value: value)])
+        ChatDemoHelper.share()
+        let isAutoLogin = EMClient.shared().isAutoLogin
+        if isAutoLogin{
+            NotificationCenter.default.post(name: NSNotification.Name(KNOTIFICATION_LOGINCHANGE), object: true)
+        }else{
+            NotificationCenter.default.post(name: NSNotification.Name(KNOTIFICATION_LOGINCHANGE), object: false)
+        }
+    }
+    //将deviToken传给SSDK
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        
+    }
+    // 注册deviceToken失败，此处失败，与环信SDK无关，一般是您的环境配置或者证书配置有误
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+//        let alert = UIAlertView.init(title: NSLocalizedString("apns.failToRegisterApns", Fail to register apns),
+//                                     message: error.description,
+//                                     delegate: nil,
+//                                     cancelButtonTitle: NSLocalizedString("ok", "OK"))
+//        alert.show()
+    }
+    //MARK:- login changed
+    func loginStateChange(_ notification : Notification){
+        let loginSuccess : Bool = notification.object as! Bool
+        var navigationController : EMNavigationController?
+        if loginSuccess{ //登录成功加载主控制窗口
+        //加载申请通知的数据
+            ApplyViewController.share().loadDataSourceFromLocalDB()
+            if self.mainController == nil{
+                self.mainController = MainViewController()
+                navigationController = EMNavigationController.init(rootViewController: self.mainController!)
+            }else{
+                navigationController = self.mainController?.navigationController as? EMNavigationController
+            }
+            ChatDemoHelper.share().mainVC = self.mainController
+            ChatDemoHelper.share().asyncGroupFromServer()
+            ChatDemoHelper.share().asyncConversationFromDB()
+            ChatDemoHelper.share().asyncPushOptions()
+            
+        }else{//登录失败加载登录页面控制器
+            if self.mainController != nil{
+                self.mainController?.navigationController?.popToRootViewController(animated: false)
+            }
+            self.mainController = nil
+            ChatDemoHelper.share().mainVC = nil
+            let loginController : LoginViewController = LoginViewController()
+            navigationController = EMNavigationController.init(rootViewController: loginController)
+        }
+        navigationController?.navigationBar.accessibilityIdentifier = "navigationbar"
+        self.window?.rootViewController = navigationController
+    }
+    
+    func isSpecifyServer()->Bool{
+//        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+        let ud = UserDefaults.standard
+        
+//        NSNumber *specifyServer = [ud objectForKey:@"identifier_enable"];
+        let specifyServer : Bool = ud.bool(forKey: "identifier_enable")
+//        if ([specifyServer boolValue]) {
+        if specifyServer as Bool{
+//            NSString *apnsCertName = nil;
+            var apnsCertName = ""
+            
+//            #if DEBUG
+//                apnsCertName = @"chatdemoui_dev";
+//            #else
+//                apnsCertName = @"chatdemoui";
+//            #endif
+            #if DEBUG
+                apnsCertName = "chatdemoui_dev";
+            #else
+                apnsCertName = "chatdemoui";
+            #endif
+            
+//            NSString *appkey = [ud stringForKey:@"identifier_appkey"];
+            var appkey = ud.string(forKey: "identifier_appkey")
+//            if (!appkey)
+//            {
+//                appkey = @"easemob-demo#no1";
+//                [ud setObject:appkey forKey:@"identifier_appkey"];
+//            }
+            if appkey == nil{
+                appkey = "easemob-demo#no1"
+                ud.set(appkey, forKey: "identifier_appkey")
+            }
+            
+//            NSString *imServer = [ud stringForKey:@"identifier_imserver"];
+//            if (!imServer)
+//            {
+//                imServer = @"120.26.12.158";
+//                [ud setObject:imServer forKey:@"identifier_imserver"];
+//            }
+            var imServer = ud.string(forKey: "identifier_imserver")
+            if imServer == nil{
+                imServer = "120.26.12.158"
+                ud.set(imServer, forKey: "identifier_imserver")
+            }
+            
+//            NSString *imPort = [ud stringForKey:@"identifier_import"];
+//            if (!imPort)
+//            {
+//                imPort = @"6717";
+//                [ud setObject:imPort forKey:@"identifier_import"];
+//            }
+            var imPort = ud.string(forKey: "identifier_import")
+            if imPort == nil{
+                imPort = "6717"
+                ud.set(imPort, forKey: "identifier_import")
+            }
+            
+//            NSString *restServer = [ud stringForKey:@"identifier_restserver"];
+//            if (!restServer)
+//            {
+//                restServer = @"42.121.255.137";
+//                [ud setObject:restServer forKey:@"identifier_restserver"];
+//            }
+//            [ud synchronize];
+            
+            var restServer = ud.string(forKey: "identifier_restserver")
+            if restServer == nil{
+                restServer = "42.121.255.137"
+                ud.set(restServer, forKey: "identifier_restserver")
+            }
+            
+//            EMOptions *options = [EMOptions optionsWithAppkey:appkey];
+//            if (![ud boolForKey:@"enable_dns"])
+//            {
+//                options.enableDnsConfig = NO;
+//                options.chatPort = [[ud stringForKey:@"identifier_import"] intValue];
+//                options.chatServer = [ud stringForKey:@"identifier_imserver"];
+//                options.restServer = [ud stringForKey:@"identifier_restserver"];
+//            }
+            let options = EMOptions.init(appkey: appkey)
+            
+            if !ud.bool(forKey: "enable_dns"){
+                options?.enableDnsConfig = false
+                options?.chatPort = Int32(ud.string(forKey: "identifier_import")!)!
+                options?.chatServer = ud.string(forKey: "identifier_imserver")
+                options?.restServer = ud.string(forKey: "identifier_restserver")
+            }
+            
+            
+            //    EMOptions *options = [EMOptions optionsWithAppkey:@"easemob-demo#chatdemoui"];
+            options?.apnsCertName = "chatdemoui_dev";
+            options?.enableConsoleLog = true;
+            
+//            [[EMClient sharedClient] initializeSDKWithOptions:options];
+            EMClient.shared().initializeSDK(with: options)
+            return true;
+        }
+        
+        return false;
+    }
+    
 }
 

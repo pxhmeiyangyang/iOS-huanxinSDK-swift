@@ -27,6 +27,10 @@
 
 #import "EMClientDelegate.h"
 
+
+#import "Chat-Header.h"
+
+
 #define EaseMobAppKey @"easemob-demo#chatdemoui"
 
 

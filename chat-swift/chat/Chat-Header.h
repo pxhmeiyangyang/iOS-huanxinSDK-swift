@@ -52,6 +52,7 @@
 #import "EaseMessageCell.h"
 #import "EaseEmoji.h"
 #import "EaseChineseToPinyin.h"
+#import "ApplyViewController.h"
 
 //third party
 #import "EMAlertView.h"
