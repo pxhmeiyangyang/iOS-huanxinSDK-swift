@@ -23,6 +23,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate,EMChatManagerDelegate{
         window = UIWindow.init(frame: UIScreen.main.bounds)
         window?.backgroundColor = UIColor.white
 
+        //设置navi相关界面
+        UINavigationBar.appearance().barTintColor = UIColor.blue
+        UINavigationBar.appearance().tintColor = UIColor.init(red: 30, green: 167, blue: 252, alpha: 1)
+        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName : UIColor.red]
         //初始化环信SDK，详细内容在APPDelegate+EaseMob.m文件中
         //SDK注册APNS文件的名字，需要与后台上传证书是时的名字--对应
         var apnsCertName  = ""
@@ -131,70 +135,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate,EMChatManagerDelegate{
     }
     
     func isSpecifyServer()->Bool{
-//        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
         let ud = UserDefaults.standard
         
-//        NSNumber *specifyServer = [ud objectForKey:@"identifier_enable"];
         let specifyServer : Bool = ud.bool(forKey: "identifier_enable")
-//        if ([specifyServer boolValue]) {
+
         if specifyServer as Bool{
-//            NSString *apnsCertName = nil;
+
             var apnsCertName = ""
             
-//            #if DEBUG
-//                apnsCertName = @"chatdemoui_dev";
-//            #else
-//                apnsCertName = @"chatdemoui";
-//            #endif
             #if DEBUG
                 apnsCertName = "chatdemoui_dev";
             #else
                 apnsCertName = "chatdemoui";
             #endif
             
-//            NSString *appkey = [ud stringForKey:@"identifier_appkey"];
             var appkey = ud.string(forKey: "identifier_appkey")
-//            if (!appkey)
-//            {
-//                appkey = @"easemob-demo#no1";
-//                [ud setObject:appkey forKey:@"identifier_appkey"];
-//            }
+
             if appkey == nil{
                 appkey = "easemob-demo#no1"
                 ud.set(appkey, forKey: "identifier_appkey")
             }
             
-//            NSString *imServer = [ud stringForKey:@"identifier_imserver"];
-//            if (!imServer)
-//            {
-//                imServer = @"120.26.12.158";
-//                [ud setObject:imServer forKey:@"identifier_imserver"];
-//            }
             var imServer = ud.string(forKey: "identifier_imserver")
             if imServer == nil{
                 imServer = "120.26.12.158"
                 ud.set(imServer, forKey: "identifier_imserver")
             }
-            
-//            NSString *imPort = [ud stringForKey:@"identifier_import"];
-//            if (!imPort)
-//            {
-//                imPort = @"6717";
-//                [ud setObject:imPort forKey:@"identifier_import"];
-//            }
             var imPort = ud.string(forKey: "identifier_import")
             if imPort == nil{
                 imPort = "6717"
                 ud.set(imPort, forKey: "identifier_import")
             }
-            
-//            NSString *restServer = [ud stringForKey:@"identifier_restserver"];
-//            if (!restServer)
-//            {
-//                restServer = @"42.121.255.137";
-//                [ud setObject:restServer forKey:@"identifier_restserver"];
-//            }
-//            [ud synchronize];
             
             var restServer = ud.string(forKey: "identifier_restserver")
             if restServer == nil{
@@ -202,14 +173,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate,EMChatManagerDelegate{
                 ud.set(restServer, forKey: "identifier_restserver")
             }
             
-//            EMOptions *options = [EMOptions optionsWithAppkey:appkey];
-//            if (![ud boolForKey:@"enable_dns"])
-//            {
-//                options.enableDnsConfig = NO;
-//                options.chatPort = [[ud stringForKey:@"identifier_import"] intValue];
-//                options.chatServer = [ud stringForKey:@"identifier_imserver"];
-//                options.restServer = [ud stringForKey:@"identifier_restserver"];
-//            }
             let options = EMOptions.init(appkey: appkey)
             
             if !ud.bool(forKey: "enable_dns"){
@@ -218,13 +181,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate,EMChatManagerDelegate{
                 options?.chatServer = ud.string(forKey: "identifier_imserver")
                 options?.restServer = ud.string(forKey: "identifier_restserver")
             }
-            
-            
-            //    EMOptions *options = [EMOptions optionsWithAppkey:@"easemob-demo#chatdemoui"];
             options?.apnsCertName = "chatdemoui_dev";
             options?.enableConsoleLog = true;
-            
-//            [[EMClient sharedClient] initializeSDKWithOptions:options];
             EMClient.shared().initializeSDK(with: options)
             return true;
         }
